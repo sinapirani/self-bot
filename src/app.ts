@@ -13,10 +13,10 @@ import AWS from 'aws-sdk'
 // import { mongoClient } from "../database/db";
 dotenv.config();
 
-const apiId = process.env.API_ID;
-const apiHash = process.env.API_HASH;
+const apiId = +process.env.API_ID!;
+const apiHash = process.env.API_HASH!;
 const stringSession = new StringSession(
-  process.env.SESSION
+  process.env.SESSION!
 ); // fill this later with the value from session.save()
 export const mongoClient = new MongoClient(env.MONGODB_URI!);
 export const Database = {
@@ -24,16 +24,14 @@ export const Database = {
   messages: mongoClient.db(env.DB_NAME).collection("messages")
 }
 
-const AWS_CONFIG:AWS.ConfigurationOptions = {
 
+export const S3Client = new AWS.S3({
+  endpoint: process.env.LIARA_ENDPOINT,
   credentials:{
     accessKeyId: process.env.LIARA_ACCESS_KEY!,
     secretAccessKey: process.env.LIARA_SECRET_KEY!
   }
-
-}
-AWS.config.update(AWS_CONFIG)
-export const S3Client = new AWS.S3()
+})
 
 export const client = new TelegramClient(stringSession, apiId, apiHash, {
   connectionRetries: 5, 
