@@ -3,6 +3,7 @@ import { S3Client, client } from "../src/app";
 import fs from "fs";
 import { ManagedUpload, PutObjectRequest } from "aws-sdk/clients/s3";
 import { TEXT_GENERATOR } from "../texts/toLink";
+import memetype from "mime-types";
 
 export const toLinkCommand = async (event: NewMessageEvent) => {
   const message = event.message;
@@ -18,8 +19,20 @@ export const toLinkCommand = async (event: NewMessageEvent) => {
     ids: replyToMsgId,
   });
   const repliedMessage = repliedMessages[0];
+  const repliedMessageMedia = repliedMessage.media!;
 
-  console.log("media", repliedMessage.media!);
+  let fileExt;
+  //@ts-ignore
+  let photoInfo = repliedMessageMedia?.photo;
+  //@ts-ignore
+  let documentInfo = repliedMessageMedia?.document;
+
+  if (photoInfo) {
+    fileExt = "jpg";
+  }
+  if (documentInfo) {
+    fileExt = memetype.extension(documentInfo.mimeType);
+  }
 
   try {
     let progressPercent = 0;
@@ -29,20 +42,19 @@ export const toLinkCommand = async (event: NewMessageEvent) => {
     });
 
     let uploadText;
-    const progress = (recived: any, total: any) => {
+    const progress = async(recived: any, total: any) => {
       progressPercent = (+recived / +total) * 100;
       uploadText = `Upload To Server: ${Math.floor(progressPercent)}% 🚀`;
-      startMessage &&
-        client.editMessage(chatid!, {
-          message: startMessage.id,
-          text: uploadText,
-        });
+      await client.editMessage(chatid!, {
+        message: startMessage.id,
+        text: uploadText,
+      });
     };
 
     let fileBuffer = await client.downloadMedia(repliedMessage?.media!, {
       progressCallback: progress,
     });
-    const fileKey = `${Math.floor(Math.random() * 432525231)}.jpg`;
+    const fileKey = `${Math.floor(Math.random() * 432525231)}.${fileExt}`;
     const s3ObjParams: PutObjectRequest = {
       Body: fileBuffer,
       Bucket: process.env.LIARA_BUCKET_NAME!,
@@ -50,7 +62,7 @@ export const toLinkCommand = async (event: NewMessageEvent) => {
     };
 
     await S3Client.putObject(s3ObjParams).promise();
-    await client.editMessage(chatid!, {
+    await client.editMessage(chatid!, { 
       message: startMessage.id,
       text: TEXT_GENERATOR.downloadLinkText(uploadText, fileKey),
     });
