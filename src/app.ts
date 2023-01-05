@@ -7,8 +7,11 @@ import { sayHello } from "../modules/sayHello";
 import { MongoClient } from "mongodb";
 import { env } from "process";
 import { getNewMessages } from "../events/events";
+// import { S3Client } from "@aws-sdk/client-s3";
+import AWS from 'aws-sdk'
+
 // import { mongoClient } from "../database/db";
-dotenv.config()
+dotenv.config();
 
 const apiId = 1152348;
 const apiHash = "6625a66ed1548b6ff66b66794ff51ed3";
@@ -21,10 +24,19 @@ export const Database = {
   messages: mongoClient.db(env.DB_NAME).collection("messages")
 }
 
+const AWS_CONFIG = {
+  accessKeyId: process.env.LIARA_ACCESS_KEY,
+  accessSecretKey: process.env.LIARA_SECRET_KEY,
+}
+AWS.config.update(AWS_CONFIG)
+export const S3Client = new AWS.S3()
 
 export const client = new TelegramClient(stringSession, apiId, apiHash, {
   connectionRetries: 5, 
 });
+
+
+
 (async () => {
     
     await mongoClient.connect()
