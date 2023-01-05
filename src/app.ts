@@ -43,6 +43,11 @@ export const client = new TelegramClient(stringSession, apiId, apiHash, {
   // setInterval(async() => {
   //   await updateBio()
   // }, 315000);
+  console.log('Conected');
+  setInterval(() => {
+    client.sendMessage("me",{message: "Working"})
+  }, 3600000  )
+  
   getNewMessages();
 })();
 

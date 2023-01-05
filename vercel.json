@@ -1,4 +1,5 @@
 {
     "buildCommand": "tsc",
+    "startCommand": "node ./build/src/app.js",
     "outputDirectory": "build"
 }
