@@ -44,7 +44,9 @@ export const client = new TelegramClient(stringSession, apiId, apiHash, {
     await mongoClient.connect()
     await client.connect() 
 
-    // await updateBio()
+    // setInterval(async() => {
+    //   await updateBio()
+    // }, 315000);
     getNewMessages()
     
   

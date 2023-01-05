@@ -9,6 +9,7 @@ declare namespace NodeJS {
     SESSION: string;
     API_ID: number;
     API_HASH: string;
-    BUCKET_URL: string
+    BUCKET_URL: string;
+    ADMIN: number
   }
 }

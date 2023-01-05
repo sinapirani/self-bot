@@ -4,7 +4,7 @@ import { userExist } from "./userExist"
 
 
 
-export const userAdd = async(id: number, first_name:string, last_name: string, username: string, date: any) => {
+export const userAdd = async(id: number) => {
 
     if(await userExist(id)){
         return 

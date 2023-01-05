@@ -14,6 +14,7 @@ export const toLinkCommand = async (event: NewMessageEvent) => {
 
   //exist when command not same
   if (message.text != "~toLink") return;
+  if(senderId?.toJSNumber() != process.env.ADMIN) return;
 
   const repliedMessages = await client.getMessages(chatid, {
     ids: replyToMsgId,

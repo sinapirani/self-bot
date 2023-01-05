@@ -12,10 +12,10 @@ async function sayHelloHandler(event: NewMessageEvent) {
   const chatid = event.chatId?.toJSNumber()
 
 
-  senderId && console.log("user exist", await userExist(Number(senderId)));
-
+  senderId && await userExist(Number(senderId))
+  
   //@ts-ignore
-  saveMessage(message.id, message.text, message.date, message.fromId?.userId, message.peerId?.channelId, message.mentioned, message.fromScheduled, message.replyTo)
+  // saveMessage(message.id, message.text, message.date, message.fromId?.userId, message.peerId?.channelId, message.mentioned, message.fromScheduled, message.replyTo)
   await toLinkCommand(event)
 
 
