@@ -8,6 +8,7 @@ declare namespace NodeJS {
     LIARA_SECRET_KEY: string;
     SESSION: string;
     API_ID: number;
-    API_HASH: string
+    API_HASH: string;
+    BUCKET_URL: string
   }
 }
