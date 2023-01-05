@@ -9,7 +9,7 @@ import { env } from "process";
 import { getNewMessages } from "../events/events";
 // import { S3Client } from "@aws-sdk/client-s3";
 import AWS from "aws-sdk";
-import express, { Request } from "express";
+import express, { Request, Response } from "express";
 const app = express();
 
 // import { mongoClient } from "../database/db";
@@ -46,9 +46,9 @@ export const client = new TelegramClient(stringSession, apiId, apiHash, {
   getNewMessages();
 })();
 
-app.get("/", async (req: Request, res: Response) => {
-  await res.json({
-    success: true,
-  });
+app.get("/", (req: Request, res: Response) => {
+   res.json({
+    seccess: true
+   })
 });
 app.listen(process.env.PORT || 3000);
