@@ -5,6 +5,9 @@ declare namespace NodeJS {
     LIARA_BUCKET_NAME: string;
     LIARA_ENDPOINT: string;
     LIARA_ACCESS_KEY: string;
-    LIARA_SECRET_KEY: string
+    LIARA_SECRET_KEY: string;
+    SESSION: string;
+    API_ID: number;
+    API_HASH: string
   }
 }
