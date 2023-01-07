@@ -10,7 +10,12 @@ import { getNewMessages } from "../events/events";
 // import { S3Client } from "@aws-sdk/client-s3";
 import AWS from "aws-sdk";
 import express, { Request, Response } from "express";
+
+
+
 const app = express();
+
+
 
 // import { mongoClient } from "../database/db";
 dotenv.config();
@@ -22,6 +27,7 @@ export const mongoClient = new MongoClient(env.MONGODB_URI!);
 export const Database = {
   users: mongoClient.db(env.DB_NAME).collection("users"),
   messages: mongoClient.db(env.DB_NAME).collection("messages"),
+  admins: mongoClient.db(env.DB_NAME).collection("admins")
 };
 
 export const S3Client = new AWS.S3({
@@ -43,11 +49,11 @@ export const client = new TelegramClient(stringSession, apiId, apiHash, {
   // setInterval(async() => {
   //   await updateBio()
   // }, 315000);
+
+  client.sendMessage("me",{
+    message: "Bot Started"
+  })
   console.log('Conected');
-  setInterval(() => {
-    client.sendMessage("me",{message: "Working"})
-  }, 3600000  )
-  
   getNewMessages();
 })();
 

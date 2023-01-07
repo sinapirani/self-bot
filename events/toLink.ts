@@ -2,8 +2,12 @@ import { NewMessageEvent } from "telegram/events";
 import { S3Client, client } from "../src/app";
 import fs from "fs";
 import { ManagedUpload, PutObjectRequest } from "aws-sdk/clients/s3";
-import { TEXT_GENERATOR } from "../texts/toLink";
+import { TEXT_GENERATOR } from "../texts/texts";
 import memetype from "mime-types";
+import {BigInteger} from "big-integer"
+
+
+
 
 export const toLinkCommand = async (event: NewMessageEvent) => {
   const message = event.message;
@@ -34,22 +38,29 @@ export const toLinkCommand = async (event: NewMessageEvent) => {
   if (documentInfo) {
     fileExt = memetype.extension(documentInfo.mimeType);
   }
-
+  
   try {
+
+    const chat = chatid
     let progressPercent = 0;
+    let tempProgressPercent = 0;
     let startMessage = await client.sendMessage(chatid!, {
       message: "Download Started ... ",
       replyTo: message.replyToMsgId,
     });
-
+    console.log('start Massage', startMessage);
     let uploadText;
-    const progress = async(recived: any, total: any) => {
-      progressPercent = (+recived / +total) * 100;
-      uploadText = `Upload To Server: ${Math.floor(progressPercent)}% 🚀`;
-      await client.editMessage(chatid!, {
+    const progress = async(recived: BigInteger, total: BigInteger) => {
+      progressPercent = Math.floor(+recived.toString() / +total.toString()* 100) ;
+      console.log('progrece percent', progressPercent);
+      
+      if(progressPercent == tempProgressPercent) return
+      uploadText = `Upload To Server: ${progressPercent}% 🚀`;
+      await client.editMessage(chat!, {
         message: startMessage.id,
         text: uploadText,
       });
+      tempProgressPercent = progressPercent
     };
 
     let fileBuffer = await client.downloadMedia(repliedMessage?.media!, {
