@@ -1,6 +1,7 @@
 import { Database, client } from "../../src/app";
 import { TEXT_GENERATOR } from "../../texts/texts";
-import { isAdmin } from "./isAdmin";
+import { ADMIN_ACCESS } from "./access";
+import { haveAccess } from "./haveAccess";
 
 export const addAdmin = async (
   id: number,
@@ -9,14 +10,14 @@ export const addAdmin = async (
   chatId: any
 ) => {
   try {
-    if (!(await isAdmin(senderId))) {
+    if (!(await haveAccess(senderId, ADMIN_ACCESS.full))) {
       return await client.sendMessage(chatId!, {
         message: TEXT_GENERATOR.addAdmin.accessDenied,
         replyTo: messageId,
       });
     }
 
-    if (!(await isAdmin(id))) {
+    if (!(await haveAccess(id, ADMIN_ACCESS.full))) {
       return await client.sendMessage(chatId!, {
         message: TEXT_GENERATOR.addAdmin.alreadyAdmin,
         replyTo: messageId,
